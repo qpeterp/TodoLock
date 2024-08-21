@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         MyBottomNavigation(
                             containerColor = Colors.GrayDark,
                             contentColor = Color.LightGray,
-                            indicatorColor = Colors.DarkPrimaryColor,
+                            indicatorColor = Colors.LightPrimaryColor,
                             navController = navController
                         )
                     },
