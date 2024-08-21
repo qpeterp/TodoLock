@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.qpeterp.todolock.ui.main.theme.Colors
 
 @Preview(showBackground = true)
 @Composable
@@ -17,12 +17,12 @@ fun LockScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Colors.Black)
             .padding(top = 64.dp)
     ) {
         Text(
             text = "잠금 설정하는 곳입니다. ^^7",
-            color = Color.White
+            color = Colors.White
         )
     }
 }

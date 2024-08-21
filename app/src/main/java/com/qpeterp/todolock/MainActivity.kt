@@ -23,10 +23,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -35,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.qpeterp.todolock.ui.main.lock.LockScreen
 import com.qpeterp.todolock.ui.main.setting.SettingScreen
+import com.qpeterp.todolock.ui.main.theme.Colors
 import com.qpeterp.todolock.ui.main.todo.TodoScreen
 import com.qpeterp.todolock.ui.theme.TodoLockTheme
 
@@ -50,13 +49,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         MyBottomNavigation(
-                            containerColor = Color(ContextCompat.getColor(LocalContext.current, R.color.gray_dark)),
-                            contentColor = Color(ContextCompat.getColor(LocalContext.current, R.color.gray_light)),
-                            indicatorColor = Color(ContextCompat.getColor(LocalContext.current, R.color.purple_500)),
+                            containerColor = Colors.GrayDark,
+                            contentColor = Color.LightGray,
+                            indicatorColor = Colors.DarkPrimaryColor,
                             navController = navController
                         )
                     },
-                    containerColor = Color.Black
+                    containerColor = Colors.Black
                 ) {
                     Box(modifier = Modifier.padding(it)) {
                         NavigationHost(

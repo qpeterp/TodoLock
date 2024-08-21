@@ -33,14 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
-import com.qpeterp.todolock.R
 import com.qpeterp.todolock.data.todo.TodoData
+import com.qpeterp.todolock.ui.main.theme.Colors
 
 @Preview(showBackground = true)
 @Composable
@@ -59,7 +57,7 @@ fun TodoScreen() {
 fun TodoList() {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    val users = listOf(
+    val todoList = listOf(
         TodoData("전력으로 밥먹기", false),
         TodoData("끝내주게 잠자기", false),
         TodoData("아크로바틱하게 숨쉬기", true),
@@ -75,7 +73,7 @@ fun TodoList() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp)
-                .background(Color(ContextCompat.getColor(LocalContext.current, R.color.gray_dark))),
+                .background(Colors.GrayDark),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -91,7 +89,7 @@ fun TodoList() {
                 Icon(
                     imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
                     contentDescription = "More",
-                    tint = Color.White
+                    tint = Colors.White
                 )
             }
         }
@@ -107,8 +105,8 @@ fun TodoList() {
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(users) { index, user ->
-                    UserItem(user)
+                itemsIndexed(todoList) { index, todo ->
+                    TodoItem(todo)
                 }
             }
         }
@@ -116,29 +114,29 @@ fun TodoList() {
 }
 
 @Composable
-fun UserItem(user: TodoData) {
+fun TodoItem(todo: TodoData) {
     Column {
         // 각 항목을 Row로 구성
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Black)
+                .background(Colors.Black)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically, // 수직으로 가운데 정렬
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = user.todo,
+                text = todo.todo,
                 color = Color.White,
                 fontSize = 14.sp,
-                textDecoration = if (user.isChecked) TextDecoration.LineThrough else TextDecoration.None
+                textDecoration = if (todo.isChecked) TextDecoration.LineThrough else TextDecoration.None
             )
 
             Checkbox(
-                checked = user.isChecked,
-                onCheckedChange = { user.isChecked = it },
+                checked = todo.isChecked,
+                onCheckedChange = { todo.isChecked = it },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = Color(ContextCompat.getColor(LocalContext.current, R.color.gray_dark)),      // 체크된 상태에서의 색상
+                    checkedColor = Colors.GrayDark,      // 체크된 상태에서의 색상
                     uncheckedColor = Color.Gray,   // 체크되지 않은 상태에서의 색상
                     checkmarkColor = Color.White   // 체크 표시의 색상
                 )
@@ -149,7 +147,7 @@ fun UserItem(user: TodoData) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Color(ContextCompat.getColor(LocalContext.current, R.color.gray_dark))) // 경계선 색상
+                .background(Colors.GrayDark) // 경계선 색상
         )
     }
 }
