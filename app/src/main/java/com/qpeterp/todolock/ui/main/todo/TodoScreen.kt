@@ -1,11 +1,14 @@
 package com.qpeterp.todolock.ui.main.todo
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,9 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.qpeterp.todolock.data.todo.TodoData
+import com.qpeterp.todolock.common.Constant
+import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.theme.Colors
 
 @Preview(showBackground = true)
@@ -58,10 +63,10 @@ fun TodoList() {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     val todoList = listOf(
-        TodoData("전력으로 밥먹기", false),
-        TodoData("끝내주게 잠자기", false),
-        TodoData("아크로바틱하게 숨쉬기", true),
-        TodoData("미성년자 탈출하기", false),
+        TodoData(todo = "전력으로 밥먹기", isChecked = false),
+        TodoData(todo = "끝내주게 잠자기", isChecked = false),
+        TodoData(todo = "아크로바틱하게 숨쉬기", isChecked = true),
+        TodoData(todo = "미성년자 탈출하기", isChecked = false),
     )
 
     // 전체 화면을 차지하는 Row
@@ -96,8 +101,8 @@ fun TodoList() {
 
         AnimatedVisibility(
             visible = expanded,
-            enter = expandVertically(animationSpec = tween(300)) + fadeIn(),
-            exit = shrinkVertically(animationSpec = tween(300)) + fadeOut()
+            enter = expandVertically(animationSpec = tween(300)) + slideIn { IntOffset(0, 0) },
+            exit = shrinkVertically(animationSpec = tween(700)) + slideOut { IntOffset(0, 0) }
         ) {
             LazyColumn(
                 modifier = Modifier
@@ -134,7 +139,11 @@ fun TodoItem(todo: TodoData) {
 
             Checkbox(
                 checked = todo.isChecked,
-                onCheckedChange = { todo.isChecked = it },
+                onCheckedChange =
+                {
+                    todo.isChecked = it
+                    Log.d(Constant.TAG, "TodoScreen TodoItem CheckBox UUID: ${todo.uuid}")
+                },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Colors.GrayDark,      // 체크된 상태에서의 색상
                     uncheckedColor = Color.Gray,   // 체크되지 않은 상태에서의 색상
