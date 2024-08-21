@@ -53,6 +53,9 @@ dependencies {
     // Jetpack Compose Integration
     implementation(libs.androidx.navigation.compose)
 
+    // Import the BoM for the Firebase platform
+    implementation(platform(libs.firebase.bom))
+
     implementation(libs.androidx.material)
 
     implementation(libs.androidx.core.ktx)
