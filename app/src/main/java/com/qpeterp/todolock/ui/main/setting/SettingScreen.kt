@@ -1,4 +1,4 @@
-package com.qpeterp.todolock.ui.main.ui.setting
+package com.qpeterp.todolock.ui.main.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

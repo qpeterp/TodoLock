@@ -1,6 +1,5 @@
-package com.qpeterp.todolock.ui.main.ui.theme
+package com.qpeterp.todolock.ui.main.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
