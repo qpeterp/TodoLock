@@ -1,5 +1,11 @@
 package com.qpeterp.todolock.ui.main.todo
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,10 +17,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +57,8 @@ fun TodoScreen() {
 
 @Composable
 fun TodoList() {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
     val users = listOf(
         TodoData("전력으로 밥먹기", false),
         TodoData("끝내주게 잠자기", false),
@@ -54,7 +71,6 @@ fun TodoList() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // 타이틀을 위한 Row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,17 +85,31 @@ fun TodoList() {
                 color = Color.White,
                 fontSize = 16.sp
             )
+            IconButton(
+                onClick = {expanded = !expanded},
+            ) {
+                Icon(
+                    imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                    contentDescription = "More",
+                    tint = Color.White
+                )
+            }
         }
 
-        // 할 일 목록을 표시하는 LazyColumn
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically(animationSpec = tween(300)) + fadeIn(),
+            exit = shrinkVertically(animationSpec = tween(300)) + fadeOut()
         ) {
-            itemsIndexed(users) { index, user ->
-                UserItem(user)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                itemsIndexed(users) { index, user ->
+                    UserItem(user)
+                }
             }
         }
     }
