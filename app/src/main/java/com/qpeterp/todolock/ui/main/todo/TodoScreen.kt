@@ -82,14 +82,14 @@ fun TodoScreen(viewModel: TodoViewModel = viewModel(factory = TodoViewModelFacto
             .padding(top = 64.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            TodoList(todoListState)
+            TodoList(todoListState, viewModel)
         }
     }
     CreateTodoDialog(viewModel)
 }
 
 @Composable
-fun TodoList(todoList: List<TodoData>) {
+fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     // 전체 화면을 차지하는 Row
@@ -137,7 +137,9 @@ fun TodoList(todoList: List<TodoData>) {
                     TodoItem(
                         todo,
                         onEdit = {},
-                        onDelete = {}
+                        onDelete = {
+                            viewModel.deleteTodo(todo)
+                        }
                     )
                 }
             }

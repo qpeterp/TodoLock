@@ -35,9 +35,16 @@ class TodoViewModel(context: Context): ViewModel() {
         }
     }
 
-    fun updateTodo(todo: String) {
+    fun updateTodo(todo: TodoData) {
         viewModelScope.launch(Dispatchers.IO) {
-            db?.todoDao()?.updateTodo(TodoData(todo = todo, isChecked = false))
+            db?.todoDao()?.updateTodo(todo)
+            loadTodos()
+        }
+    }
+
+    fun deleteTodo(todo: TodoData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            db?.todoDao()?.deleteTodo(todo)
             loadTodos()
         }
     }
