@@ -11,6 +11,9 @@ interface TodoDao {
     @Query("SELECT * FROM TodoData")
     fun getAll(): List<TodoData>
 
+    @Query("DELETE FROM TodoData")
+    fun deleteAll()
+
     @Insert
     fun insertTodo(vararg todo: TodoData)
 
