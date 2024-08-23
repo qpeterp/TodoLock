@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -32,6 +34,11 @@ import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.Button
+import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -50,6 +57,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -60,6 +68,7 @@ import com.qpeterp.todolock.common.Constant
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.theme.Colors
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Preview(showBackground = true)
 @Composable
@@ -125,23 +134,74 @@ fun TodoList(todoList: List<TodoData>) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(todoList) { index, todo ->
-                    TodoItem(todo)
+                    TodoItem(
+                        todo,
+                        onEdit = {},
+                        onDelete = {}
+                    )
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TodoItem(todo: TodoData) {
-    Column {
-        // 각 항목을 Row로 구성
+fun TodoItem(
+    todo: TodoData,
+    onDelete: () -> Unit,
+    onEdit: () -> Unit
+) {
+    val swipeableState = rememberSwipeableState(initialValue = 0)
+
+    val maxSwipe = 100.dp
+    val maxSwipePx = with(LocalDensity.current) { maxSwipe.toPx() }
+
+    val anchors = mapOf(0f to 0, -maxSwipePx to 1) // 0: 원래 상태, 1: 스와이프된 상태
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .swipeable(
+                state = swipeableState,
+                anchors = anchors,
+                thresholds = { _, _ -> FractionalThreshold(0.3f) },
+                orientation = Orientation.Horizontal
+            )
+            .background(Colors.Black)
+    ) {
+        // 배경 액션 버튼들
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .matchParentSize()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onEdit) {
+                Icon(
+                    imageVector = Icons.Outlined.Edit,
+                    contentDescription = "Edit",
+                    tint = Color.White
+                )
+            }
+            IconButton(onClick = onDelete) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.White
+                )
+            }
+        }
+
+        // 실제 내용물
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
                 .background(Colors.Black)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically, // 수직으로 가운데 정렬
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -153,24 +213,24 @@ fun TodoItem(todo: TodoData) {
 
             Checkbox(
                 checked = todo.isChecked,
-                onCheckedChange =
-                {
+                onCheckedChange = {
                     todo.isChecked = it
                     Log.d(Constant.TAG, "TodoScreen TodoItem CheckBox UUID: ${todo.uuid}")
                 },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = Colors.GrayDark,      // 체크된 상태에서의 색상
-                    uncheckedColor = Color.Gray,   // 체크되지 않은 상태에서의 색상
-                    checkmarkColor = Color.White   // 체크 표시의 색상
+                    checkedColor = Colors.GrayDark,
+                    uncheckedColor = Color.Gray,
+                    checkmarkColor = Color.White
                 )
             )
         }
 
+        // 경계선
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Colors.GrayDark) // 경계선 색상
+                .background(Colors.GrayDark)
         )
     }
 }
