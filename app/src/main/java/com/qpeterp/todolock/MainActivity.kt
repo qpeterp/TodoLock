@@ -133,7 +133,7 @@ private fun MyBottomNavigation(
 
 @Composable
 fun NavigationHost(navController: NavController) {
-    NavHost(navController as NavHostController, startDestination = BottomNavItem.Lock.route) {
+    NavHost(navController as NavHostController, startDestination = BottomNavItem.Todo.route) {
         composable(BottomNavItem.Lock.route) { LockScreen() }
         composable(BottomNavItem.Todo.route) { TodoScreen() }
         composable(BottomNavItem.Setting.route) { SettingScreen() }
