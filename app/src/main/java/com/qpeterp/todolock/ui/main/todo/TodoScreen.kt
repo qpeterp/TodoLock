@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.Button
 import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.rememberSwipeableState
@@ -70,10 +72,12 @@ import com.qpeterp.todolock.ui.main.theme.Colors
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview(showBackground = true)
 @Composable
 fun TodoScreen(viewModel: TodoViewModel = viewModel(factory = TodoViewModelFactory(LocalContext.current))) {
     val todoListState by viewModel.todoList.collectAsState()
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     Column(
         modifier = Modifier
@@ -82,15 +86,17 @@ fun TodoScreen(viewModel: TodoViewModel = viewModel(factory = TodoViewModelFacto
             .padding(top = 64.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            TodoList(todoListState, viewModel)
+            TodoList(todoListState, viewModel, sheetState)
         }
     }
     CreateTodoDialog(viewModel)
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
+fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel, sheetState: ModalBottomSheetState) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     // 전체 화면을 차지하는 Row
     Column(
@@ -136,7 +142,10 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                 itemsIndexed(todoList) { index, todo ->
                     TodoItem(
                         todo,
-                        onEdit = {},
+                        onEdit = {
+                            Log.d(Constant.TAG, "TodoList: 그냥 업데이트 누름")
+                            coroutineScope.launch { sheetState.show() }
+                        },
                         onDelete = {
                             viewModel.deleteTodo(todo)
                         }
@@ -202,7 +211,11 @@ fun TodoItem(
                 .fillMaxSize()
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
                 .background(Colors.Black)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .clickable(
+                    onClick = {},
+                    onClickLabel = null,
+                ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -239,9 +252,15 @@ fun TodoItem(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
+fun UpdateTodoDialog(sheetState: ModalBottomSheetState) {
+
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
 fun CreateTodoDialog(viewModel: TodoViewModel) {
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var text by remember { mutableStateOf("") }
 
     ModalBottomSheetLayout(
@@ -316,7 +335,7 @@ fun CreateTodoButton(onClick: () -> Unit) {
             .fillMaxSize() // 화면 전체를 채우도록 Box 설정
     ) {
         ExtendedFloatingActionButton(
-            onClick = { onClick() },
+            onClick = onClick,
             icon = { Icon(Icons.Outlined.Add, contentDescription = "할일 추가") },
             text = { Text(
                 text = "할일 추가",
