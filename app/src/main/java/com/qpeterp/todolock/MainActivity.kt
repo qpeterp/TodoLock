@@ -31,7 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.qpeterp.todolock.ui.main.lock.LockScreen
+import com.qpeterp.todolock.ui.main.lock.main.LockScreen
 import com.qpeterp.todolock.ui.main.setting.SettingScreen
 import com.qpeterp.todolock.ui.main.theme.Colors
 import com.qpeterp.todolock.ui.main.todo.TodoScreen
