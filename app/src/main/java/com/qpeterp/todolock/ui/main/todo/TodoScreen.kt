@@ -1,5 +1,6 @@
 package com.qpeterp.todolock.ui.main.todo
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -72,6 +73,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.qpeterp.todolock.common.Constant
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.theme.Colors
 import kotlinx.coroutines.launch
@@ -99,9 +101,9 @@ fun TodoScreen(viewModel: TodoViewModel = viewModel(factory = TodoViewModelFacto
 @Composable
 fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var isUpdateClick = remember { mutableStateOf(false) }
+    val isUpdateClick = remember { mutableStateOf(false) }
 
-    var todoToUpdate = remember {
+    val todoToUpdate = remember {
         mutableStateOf(TodoData(uuid = UUID.fromString("df8d1de2-d5fb-43ce-ad10-09cc21aa4244"), todo = "", isChecked = false))
     }
 
@@ -152,6 +154,7 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                         onEdit = {
                             isUpdateClick.value = !isUpdateClick.value
                             todoToUpdate.value.todo = todo.todo
+                            todoToUpdate.value.uuid = todo.uuid
                         },
                         onDelete = {
                             viewModel.deleteTodo(todo)
@@ -170,9 +173,11 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                 todo = todoToUpdate.value,
                 onClickCancel = { isUpdateClick.value = false },
                 onClickUpdate = { updatedText ->
-                    isUpdateClick.value = false
+                    Log.d(Constant.TAG, "TodoList: updateClick updatedText: $updatedText")
                     todoToUpdate.value.todo = updatedText
                     viewModel.updateTodo(todoToUpdate.value)
+                    Log.d(Constant.TAG, "TodoList: todoToUpdate: ${todoToUpdate.value}")
+                    isUpdateClick.value = false
                 }
             )
         }

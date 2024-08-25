@@ -7,7 +7,7 @@ import java.util.UUID
 
 @Entity
 data class TodoData(
-    @PrimaryKey val uuid: UUID = UUID.randomUUID(),
+    @PrimaryKey var uuid: UUID = UUID.randomUUID(),
     @ColumnInfo(name = "todo") var todo: String,
     @ColumnInfo(name = "isChecked") var isChecked: Boolean
 )
