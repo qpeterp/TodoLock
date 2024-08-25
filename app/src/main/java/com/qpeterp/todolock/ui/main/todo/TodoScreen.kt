@@ -1,6 +1,5 @@
 package com.qpeterp.todolock.ui.main.todo
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -73,7 +72,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.qpeterp.todolock.common.Constant
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.theme.Colors
 import kotlinx.coroutines.launch
@@ -153,10 +151,14 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                         todo,
                         onEdit = {
                             isUpdateClick.value = !isUpdateClick.value
-                            todoToUpdate.value = todo
+                            todoToUpdate.value.todo = todo.todo
                         },
                         onDelete = {
                             viewModel.deleteTodo(todo)
+                        },
+                        onCheck = { checkState ->
+                            todoToUpdate.value.isChecked = checkState
+                            viewModel.updateTodo(todo)
                         }
                     )
                 }
@@ -167,9 +169,9 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
             UpdateTodoDialog(
                 todo = todoToUpdate.value,
                 onClickCancel = { isUpdateClick.value = false },
-                onClickUpdate = {
+                onClickUpdate = { updatedText ->
                     isUpdateClick.value = false
-                    todoToUpdate.value.todo = it
+                    todoToUpdate.value.todo = updatedText
                     viewModel.updateTodo(todoToUpdate.value)
                 }
             )
@@ -182,14 +184,16 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
 fun TodoItem(
     todo: TodoData,
     onDelete: () -> Unit,
-    onEdit: () -> Unit
+    onEdit: () -> Unit,
+    onCheck: (checkState: Boolean) -> Unit
 ) {
     val swipeableState = rememberSwipeableState(initialValue = 0)
 
     val maxSwipe = 100.dp
     val maxSwipePx = with(LocalDensity.current) { maxSwipe.toPx() }
-
     val anchors = mapOf(0f to 0, -maxSwipePx to 1) // 0: 원래 상태, 1: 스와이프된 상태
+
+    var isChecked by remember { mutableStateOf(todo.isChecked) }
 
     Box(
         modifier = Modifier
@@ -248,10 +252,11 @@ fun TodoItem(
             )
 
             Checkbox(
-                checked = todo.isChecked,
+                checked = isChecked,
                 onCheckedChange = {
-                    todo.isChecked = it
-                    Log.d(Constant.TAG, "TodoScreen TodoItem CheckBox UUID: ${todo.uuid}")
+                    isChecked = !isChecked
+                    todo.isChecked = isChecked
+                    onCheck(todo.isChecked)
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Colors.GrayDark,
