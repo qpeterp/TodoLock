@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -20,8 +21,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -36,11 +39,13 @@ import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.Button
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -65,19 +70,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.qpeterp.todolock.common.Constant
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.theme.Colors
 import kotlinx.coroutines.launch
+import java.util.UUID
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class)
 @Preview(showBackground = true)
 @Composable
 fun TodoScreen(viewModel: TodoViewModel = viewModel(factory = TodoViewModelFactory(LocalContext.current))) {
     val todoListState by viewModel.todoList.collectAsState()
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     Column(
         modifier = Modifier
@@ -86,17 +92,20 @@ fun TodoScreen(viewModel: TodoViewModel = viewModel(factory = TodoViewModelFacto
             .padding(top = 64.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            TodoList(todoListState, viewModel, sheetState)
+            TodoList(todoListState, viewModel)
         }
     }
     CreateTodoDialog(viewModel)
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel, sheetState: ModalBottomSheetState) {
+fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
+    var isUpdateClick = remember { mutableStateOf(false) }
+
+    var todoToUpdate = remember {
+        mutableStateOf(TodoData(uuid = UUID.fromString("df8d1de2-d5fb-43ce-ad10-09cc21aa4244"), todo = "", isChecked = false))
+    }
 
     // 전체 화면을 차지하는 Row
     Column(
@@ -139,12 +148,12 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel, sheetState: Mod
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(todoList) { index, todo ->
+                itemsIndexed(todoList) { _, todo ->
                     TodoItem(
                         todo,
                         onEdit = {
-                            Log.d(Constant.TAG, "TodoList: 그냥 업데이트 누름")
-                            coroutineScope.launch { sheetState.show() }
+                            isUpdateClick.value = !isUpdateClick.value
+                            todoToUpdate.value = todo
                         },
                         onDelete = {
                             viewModel.deleteTodo(todo)
@@ -152,6 +161,18 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel, sheetState: Mod
                     )
                 }
             }
+        }
+        
+        if (isUpdateClick.value) {
+            UpdateTodoDialog(
+                todo = todoToUpdate.value,
+                onClickCancel = { isUpdateClick.value = false },
+                onClickUpdate = {
+                    isUpdateClick.value = false
+                    todoToUpdate.value.todo = it
+                    viewModel.updateTodo(todoToUpdate.value)
+                }
+            )
         }
     }
 }
@@ -250,10 +271,104 @@ fun TodoItem(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UpdateTodoDialog(sheetState: ModalBottomSheetState) {
+fun UpdateTodoDialog(
+    todo: TodoData,
+    onClickCancel: () -> Unit,
+    onClickUpdate: (text: String) -> Unit,
+    ) {
+    var text by remember { mutableStateOf(todo.todo) }
 
+    Dialog(
+        onDismissRequest = onClickCancel,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        )
+    ) {
+        Card(
+            shape = RoundedCornerShape(20.dp),
+            border = BorderStroke(2.dp, Colors.LightPrimaryColor),
+            colors =  CardDefaults.cardColors(
+                contentColor = Colors.Black,
+                containerColor = Colors.Black
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(20.dp),
+            ) {
+                Text(
+                    text = "할일 수정",
+                    color = Colors.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { newText ->
+                        text = newText
+                    },
+                    label = { Text(
+                        text = "할일 수정",
+                        color = Colors.LightPrimaryColor
+                    ) },
+                    placeholder = { Text(
+                        text = "할일을 입력해주세요.",
+                        color = Colors.GrayLight
+                    ) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = Colors.White,  // 입력된 텍스트 색상
+                        focusedBorderColor = Colors.LightPrimaryColor,  // 포커스 상태의 테두리 색상
+                        unfocusedBorderColor = Colors.LightPrimaryColor,  // 비포커스 상태의 테두리 색상
+                        cursorColor = Colors.LightPrimaryColor,  // 커서 색상
+                    ),
+                )
+
+                Spacer(modifier = Modifier.height(64.dp))
+                Row(
+                    modifier = Modifier.align(Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    OutlinedButton(
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Colors.Black,
+                        ),
+                        border = BorderStroke(2.dp, Colors.LightPrimaryColor),
+                        onClick ={ onClickCancel() },
+                    ) {
+                        Text(
+                            text = "취소",
+                            color = Colors.White
+                        )
+                    }
+
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Colors.LightPrimaryColor,
+                            contentColor = Color.White
+                        ),
+                        onClick ={ onClickUpdate(text) },
+                    ) {
+                        Text(
+                            text = "수정",
+                            color = Colors.White
+                        )
+                    }
+                }
+
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
