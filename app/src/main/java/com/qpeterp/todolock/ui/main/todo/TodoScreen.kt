@@ -24,23 +24,23 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.Button
-import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.Card
@@ -385,12 +385,13 @@ fun CreateTodoDialog(viewModel: TodoViewModel) {
 
     ModalBottomSheetLayout(
         sheetBackgroundColor = Colors.GrayDark,
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetState = sheetState,
         sheetContent = {
             // 이 부분에 Bottom Sheet에 들어갈 내용을 작성합니다.
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(20.dp)
             ) {
                 Text(
                     "할일 작성",
@@ -412,9 +413,7 @@ fun CreateTodoDialog(viewModel: TodoViewModel) {
                         text = "할일을 입력해주세요.",
                         color = Colors.GrayLight
                     ) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = Colors.White,  // 입력된 텍스트 색상
                         focusedBorderColor = Colors.LightPrimaryColor,  // 포커스 상태의 테두리 색상
@@ -423,12 +422,13 @@ fun CreateTodoDialog(viewModel: TodoViewModel) {
                     ),
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Colors.LightPrimaryColor,
                         contentColor = Color.White
                     ),
+                    modifier = Modifier.align(Alignment.End),
                     onClick = {
                     viewModel.addTodo(todo = text)
                     text = ""
