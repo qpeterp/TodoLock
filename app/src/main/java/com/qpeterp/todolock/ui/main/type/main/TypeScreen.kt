@@ -39,7 +39,7 @@ import com.qpeterp.todolock.ui.main.theme.Colors
 
 @Preview(showBackground = true)
 @Composable
-fun LockScreen() {
+fun TypeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
