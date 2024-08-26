@@ -51,6 +51,9 @@ android {
 }
 
 dependencies {
+    //coroutine 코루틴
+    implementation(libs.kotlinx.coroutines.core)
+
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
 
