@@ -1,4 +1,4 @@
-package com.qpeterp.todolock.ui.main.lock.time
+package com.qpeterp.todolock.ui.main.type.time
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

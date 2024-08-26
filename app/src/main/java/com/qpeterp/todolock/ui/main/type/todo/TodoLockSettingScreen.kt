@@ -1,4 +1,4 @@
-package com.qpeterp.todolock.ui.main.lock.todo
+package com.qpeterp.todolock.ui.main.type.todo
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

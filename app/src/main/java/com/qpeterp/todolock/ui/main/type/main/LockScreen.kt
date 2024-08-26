@@ -1,4 +1,4 @@
-package com.qpeterp.todolock.ui.main.lock.main
+package com.qpeterp.todolock.ui.main.type.main
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -33,8 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.qpeterp.todolock.ui.main.lock.time.TimeSettingScreen
-import com.qpeterp.todolock.ui.main.lock.todo.TodoLockSettingScreen
+import com.qpeterp.todolock.ui.main.type.time.TimeSettingScreen
+import com.qpeterp.todolock.ui.main.type.todo.TodoLockSettingScreen
 import com.qpeterp.todolock.ui.main.theme.Colors
 
 @Preview(showBackground = true)
