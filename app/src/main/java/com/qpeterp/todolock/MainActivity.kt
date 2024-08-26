@@ -31,10 +31,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.qpeterp.todolock.ui.main.type.main.LockScreen
 import com.qpeterp.todolock.ui.main.setting.SettingScreen
 import com.qpeterp.todolock.ui.main.theme.Colors
 import com.qpeterp.todolock.ui.main.todo.TodoScreen
+import com.qpeterp.todolock.ui.main.type.main.TypeScreen
 import com.qpeterp.todolock.ui.theme.TodoLockTheme
 
 class MainActivity : ComponentActivity() {
@@ -134,7 +134,7 @@ private fun MyBottomNavigation(
 @Composable
 fun NavigationHost(navController: NavController) {
     NavHost(navController as NavHostController, startDestination = BottomNavItem.Todo.route) {
-        composable(BottomNavItem.Lock.route) { LockScreen() }
+        composable(BottomNavItem.Lock.route) { TypeScreen() }
         composable(BottomNavItem.Todo.route) { TodoScreen() }
         composable(BottomNavItem.Setting.route) { SettingScreen() }
     }

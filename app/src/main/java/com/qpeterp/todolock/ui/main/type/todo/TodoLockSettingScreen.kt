@@ -17,12 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qpeterp.todolock.ui.main.theme.Colors
 
-@Preview(showBackground = true)
 @Composable
 fun TodoLockSettingScreen() {
     Column(
@@ -30,9 +28,9 @@ fun TodoLockSettingScreen() {
             .fillMaxSize()
             .background(Color.Black)
             .padding(top = 64.dp)
-        ) {
+    ) {
         StartTodoLock(onClick = {})
-        }
+    }
 }
 
 @Composable
@@ -46,7 +44,7 @@ fun StartTodoLock(onClick: () -> Unit) {
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             Text(
-                text = "TodoList를 다 체크하지 않으면\n해제되지 않습니다!",
+                text = "TodoList를 모두 완료하지 않으면\n해제되지 않습니다!",
                 color = Colors.White,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,

@@ -3,4 +3,5 @@
     <string name="bottom_navigation_lock">잠금</string>
     <string name="bottom_navigation_todo">할일</string>
     <string name="bottom_navigation_setting">세팅</string>
+    <string name="title_activity_lock_screen">LockScreen</string>
 </resources>
