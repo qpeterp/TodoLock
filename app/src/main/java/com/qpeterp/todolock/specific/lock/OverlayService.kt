@@ -1,6 +1,5 @@
 package com.qpeterp.todolock.specific.lock
 
-import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat
@@ -62,14 +61,6 @@ class OverlayService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return super.onStartCommand(intent, flags, startId)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopForeground(true)
-        if (::overlayView.isInitialized) {
-            windowManager.removeView(overlayView)
-        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
