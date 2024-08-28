@@ -1,6 +1,11 @@
 package com.qpeterp.todolock
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -31,6 +36,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.qpeterp.todolock.common.Constant
+import com.qpeterp.todolock.specific.lock.OverlayService
 import com.qpeterp.todolock.ui.main.setting.SettingScreen
 import com.qpeterp.todolock.ui.main.theme.Colors
 import com.qpeterp.todolock.ui.main.todo.TodoScreen
@@ -38,6 +45,10 @@ import com.qpeterp.todolock.ui.main.type.main.TypeScreen
 import com.qpeterp.todolock.ui.theme.TodoLockTheme
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val REQUEST_CODE_OVERLAY_PERMISSION = 1000
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -65,6 +76,27 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        // 권한 체크 및 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION)
+            } else {
+                startOverlayService()
+            }
+        } else {
+            startOverlayService()
+        }
+    }
+
+    private fun startOverlayService() {
+        Log.d(Constant.TAG, "MainActivity startOverlayService: run run")
+        val intent = Intent(this, OverlayService::class.java)
+        startService(intent)
     }
 }
 

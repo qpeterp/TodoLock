@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -55,6 +56,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     annotationProcessor(libs.androidx.room.compiler)
 
     kapt(libs.androidx.room.compiler)
@@ -80,6 +85,8 @@ dependencies {
 
     // Import the BoM for the Firebase platform
     implementation(platform(libs.firebase.bom))
+
+    implementation("androidx.lifecycle:lifecycle-service:2.6.1")  // 이 라이브러리 포함 여부 확인
 
     implementation(libs.androidx.material)
 
