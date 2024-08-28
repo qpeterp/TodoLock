@@ -1,5 +1,6 @@
 package com.qpeterp.todolock
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -37,6 +39,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.qpeterp.todolock.common.Constant
+import com.qpeterp.todolock.specific.lock.LiveSharedPreferences
 import com.qpeterp.todolock.specific.lock.OverlayService
 import com.qpeterp.todolock.ui.main.setting.SettingScreen
 import com.qpeterp.todolock.ui.main.theme.Colors
@@ -77,6 +80,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        val pref = getSharedPreferences("lockState", MODE_PRIVATE)
+        val editor = pref.edit()
+        editor.putBoolean("lockState", false)
+        editor.apply()
+
         // 권한 체크 및 요청
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -86,17 +94,44 @@ class MainActivity : ComponentActivity() {
                 )
                 startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION)
             } else {
-                startOverlayService()
+                handleLockState()
             }
-        } else {
-            startOverlayService()
         }
+
+        handleLockState()
+    }
+
+    private fun handleLockState() {
+        val sharedPreference =
+            getSharedPreferences("lockState", Context.MODE_PRIVATE)
+        val liveSharedPreference = LiveSharedPreferences(sharedPreference)
+
+        // Observer 달아주는 과정
+        liveSharedPreference
+            .getBoolean("lockState", false)
+            .observe(this, Observer<Boolean> { result ->
+                if (result) {
+                    startOverlayService()
+                    Log.d(Constant.TAG, "handleLockState: overlayView 키는 거 실행함.")
+                } else {
+                    stopOverlayService()
+                    Log.d(Constant.TAG, "handleLockState: overlayView 끄는 거 실행함.")
+                }
+            })
     }
 
     private fun startOverlayService() {
-        Log.d(Constant.TAG, "MainActivity startOverlayService: run run")
         val intent = Intent(this, OverlayService::class.java)
         startService(intent)
+    }
+
+    private fun stopOverlayService() {
+        val intent = Intent(this, OverlayService::class.java)
+        stopService(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
 
