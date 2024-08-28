@@ -56,6 +56,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
+
     //coroutine 코루틴
     implementation(libs.kotlinx.coroutines.core)
 
