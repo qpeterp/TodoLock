@@ -49,6 +49,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -85,8 +89,6 @@ dependencies {
 
     // Import the BoM for the Firebase platform
     implementation(platform(libs.firebase.bom))
-
-    implementation("androidx.lifecycle:lifecycle-service:2.6.1")  // 이 라이브러리 포함 여부 확인
 
     implementation(libs.androidx.material)
 
