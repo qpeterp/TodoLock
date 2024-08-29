@@ -215,7 +215,7 @@ fun TodoItem(
         Row(
             modifier = Modifier
                 .matchParentSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
