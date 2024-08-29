@@ -53,14 +53,19 @@ class OverlayService : Service() {
         editor.putBoolean("lockState", false)
         editor.apply()
         Log.d(Constant.TAG, "OverlayService handleLockState: button is clicked lockState : ${pref.getBoolean("lockState", true)}")
-        stopForeground(true)
-        if (::overlayView.isInitialized) {
-            windowManager.removeView(overlayView)
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopForeground(true)
+        if (::overlayView.isInitialized) {
+            windowManager.removeView(overlayView)
+            Log.d(Constant.TAG, "Overlay view removed in onDestroy")
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
