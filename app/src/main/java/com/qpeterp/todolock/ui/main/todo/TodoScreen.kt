@@ -251,7 +251,7 @@ fun TodoItem(
         ) {
             Text(
                 text = todo.todo,
-                color = if (isChecked) Colors.GrayLight else Color.White,
+                color = if (todo.isChecked) Colors.GrayLight else Color.White,
                 fontSize = 14.sp,
                 textDecoration = if (todo.isChecked) TextDecoration.LineThrough else TextDecoration.None
             )
