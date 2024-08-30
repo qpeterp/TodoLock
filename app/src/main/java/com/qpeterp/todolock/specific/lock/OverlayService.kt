@@ -2,6 +2,7 @@ package com.qpeterp.todolock.specific.lock
 
 import android.app.Service
 import android.content.Intent
+import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qpeterp.todolock.R
@@ -80,7 +82,20 @@ class OverlayService : Service() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         adapter.itemClick = object : CustomAdapter.ItemClick {
-            override fun onClick(view: View, todoData: TodoData) {}
+            override fun onClick(view: TextView, todoData: TodoData) {
+                todoData.isChecked = !todoData.isChecked
+                todoViewModel.updateTodo(todoData)
+
+                with(view) {
+                    Log.d(Constant.TAG, "OverlayService initView onClick: todoList: $todoList")
+                    if (todoData.isChecked) {
+                        setPaintFlags(view.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
+
+                    } else {
+                        setPaintFlags(view.getPaintFlags() and Paint.STRIKE_THRU_TEXT_FLAG.inv())
+                    }
+                }
+            }
         }
     }
 

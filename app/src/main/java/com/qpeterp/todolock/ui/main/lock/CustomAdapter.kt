@@ -1,8 +1,8 @@
 package com.qpeterp.todolock.ui.main.lock
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.databinding.ItemTodoBinding
@@ -10,7 +10,7 @@ import com.qpeterp.todolock.databinding.ItemTodoBinding
 class CustomAdapter(private var todoList : List<TodoData>): RecyclerView.Adapter<CustomAdapter.Holder>() {
 
     interface ItemClick {  //클릭이벤트추가부분
-        fun onClick(view : View, todoData : TodoData)
+        fun onClick(view : TextView, todoData : TodoData)
     }
     var itemClick : ItemClick? = null  //클릭이벤트추가부분
 
@@ -27,9 +27,10 @@ class CustomAdapter(private var todoList : List<TodoData>): RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.todoContent.text = todoList[position].todo
+        holder.checkBox.isChecked = todoList[position].isChecked
 
         holder.checkBox.setOnClickListener {
-            itemClick?.onClick(it, todoList[position])
+            itemClick?.onClick(holder.todoContent, todoList[position])
         }
     }
 
