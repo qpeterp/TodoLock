@@ -125,6 +125,11 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                 color = Color.White,
                 fontSize = 16.sp
             )
+            Text(
+                text = "(${todoList.size})",
+                color = Color.White,
+                fontSize = 16.sp
+            )
             IconButton(
                 onClick = {expanded = !expanded},
             ) {
