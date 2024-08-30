@@ -72,7 +72,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.qpeterp.todolock.common.Constant
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.theme.Colors
@@ -82,7 +81,7 @@ import kotlin.math.roundToInt
 
 @Preview(showBackground = true)
 @Composable
-fun TodoScreen(viewModel: TodoViewModel = viewModel(factory = TodoViewModelFactory(LocalContext.current))) {
+fun TodoScreen(viewModel: TodoViewModel = TodoViewModel(LocalContext.current)) {
     val todoListState by viewModel.todoList.collectAsState()
 
     Column(
