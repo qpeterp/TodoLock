@@ -129,10 +129,6 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(this, OverlayService::class.java)
         stopService(intent)
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }
 
 @Composable

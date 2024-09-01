@@ -91,11 +91,17 @@ class OverlayService : Service() {
         val editor = pref.edit()
         editor.putBoolean("lockState", false)
         editor.apply()
+        stopOverlayService()
         Log.d(Constant.TAG, "OverlayService handleLockState: button is clicked lockState : ${pref.getBoolean("lockState", true)}")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun stopOverlayService() {
+        val intent = Intent(this, OverlayService::class.java)
+        stopService(intent)
     }
 
     override fun onDestroy() {
