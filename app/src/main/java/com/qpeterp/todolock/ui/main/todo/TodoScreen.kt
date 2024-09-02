@@ -71,6 +71,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.qpeterp.todolock.common.UpdateType
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.theme.Colors
 import kotlinx.coroutines.launch
@@ -160,7 +161,7 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                         },
                         onCheck = { checkState ->
                             todoToUpdate.isChecked = checkState
-                            viewModel.updateTodo(todo)
+                            viewModel.updateTodo(todo, UpdateType.CHECK)
                         }
                     )
                 }
@@ -173,7 +174,7 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                 onClickCancel = { isUpdateClick.value = false },
                 onClickUpdate = { updatedText ->
                     todoToUpdate.todo = updatedText
-                    viewModel.updateTodo(todoToUpdate)
+                    viewModel.updateTodo(todoToUpdate, UpdateType.CONTENT)
                     isUpdateClick.value = false
                 }
             )
@@ -257,7 +258,6 @@ fun TodoItem(
                 checked = isChecked,
                 onCheckedChange = {
                     isChecked = !isChecked
-                    todo.isChecked = isChecked
                     onCheck(todo.isChecked)
                 },
                 colors = CheckboxDefaults.colors(

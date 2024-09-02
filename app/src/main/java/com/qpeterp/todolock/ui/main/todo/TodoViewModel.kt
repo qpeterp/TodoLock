@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.qpeterp.todolock.common.UpdateType
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.data.room.TodoDatabase
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,9 @@ class TodoViewModel(context: Context): ViewModel() {
         }
     }
 
-    fun updateTodo(todo: TodoData) {
+    fun updateTodo(todo: TodoData, type: String) {
+        if (type == UpdateType.CHECK) todo.isChecked = !todo.isChecked
+
         viewModelScope.launch(Dispatchers.IO) {
             db?.todoDao()?.updateTodo(todo)
             loadTodos()

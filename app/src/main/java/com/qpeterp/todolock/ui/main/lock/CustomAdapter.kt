@@ -33,9 +33,8 @@ class CustomAdapter(private var todoList : List<TodoData>): RecyclerView.Adapter
         stateIsChecked(holder, position)
 
         holder.checkBox.setOnClickListener {
-            todoList[position].isChecked = !todoList[position].isChecked
-            stateIsChecked(holder, position)
             itemClick?.onClick(it, todoList[position])
+            stateIsChecked(holder, position)
         }
     }
 

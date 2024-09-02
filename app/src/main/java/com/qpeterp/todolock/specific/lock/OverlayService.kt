@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qpeterp.todolock.R
 import com.qpeterp.todolock.common.Constant
+import com.qpeterp.todolock.common.UpdateType
 import com.qpeterp.todolock.data.room.TodoData
 import com.qpeterp.todolock.ui.main.lock.CustomAdapter
 import com.qpeterp.todolock.ui.main.todo.TodoViewModel
@@ -104,7 +105,7 @@ class OverlayService : Service() {
 
         adapter.itemClick = object : CustomAdapter.ItemClick {
             override fun onClick(view: View, todoData: TodoData) {
-                todoViewModel.updateTodo(todoData)
+                todoViewModel.updateTodo(todoData, UpdateType.CHECK)
             }
         }
     }
