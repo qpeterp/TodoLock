@@ -1,6 +1,7 @@
 package com.qpeterp.todolock.ui.main.todo
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qpeterp.todolock.data.room.TodoData
@@ -9,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class TodoViewModel(context: Context): ViewModel() {
     // TodoData 목록을 관리할 StateFlow
@@ -16,6 +18,9 @@ class TodoViewModel(context: Context): ViewModel() {
     val todoList: StateFlow<List<TodoData>> =_todoList
 
     private val db = TodoDatabase.getInstance(context)
+    val todoToUpdate = mutableStateOf(
+        TodoData(uuid = UUID.fromString("aa1a1aa1-a1aa-11aa-aa11-11aa11aa1111"), todo = "", isChecked = false)
+    )
 
     init {
         loadTodos()
