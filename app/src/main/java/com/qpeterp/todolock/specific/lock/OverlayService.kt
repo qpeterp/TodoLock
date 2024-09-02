@@ -32,8 +32,8 @@ class OverlayService : Service() {
     private lateinit var adapter: CustomAdapter
     private lateinit var todoViewModel: TodoViewModel
 
-    private var handler: Handler? = null
-    private var runnable: Runnable? = null
+    private lateinit var handler: Handler
+    private lateinit var runnable: Runnable
     private val holdTime = 5000L
 
     @SuppressLint("ClickableViewAccessibility")
@@ -71,10 +71,10 @@ class OverlayService : Service() {
                         Log.d(Constant.TAG, "Overlay onCreate: longClick checkedcheckedcheckedcheckedchecked")
                         handleLockState()
                     }
-                    handler?.postDelayed(runnable!!, holdTime)
+                    handler.postDelayed(runnable, holdTime)
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    handler?.removeCallbacks(runnable!!)
+                    handler.removeCallbacks(runnable)
                 }
             }
             true
