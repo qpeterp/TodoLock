@@ -1,12 +1,16 @@
 package com.qpeterp.todolock.specific.lock
 
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -28,6 +32,11 @@ class OverlayService : Service() {
     private lateinit var adapter: CustomAdapter
     private lateinit var todoViewModel: TodoViewModel
 
+    private var handler: Handler? = null
+    private var runnable: Runnable? = null
+    private val holdTime = 5000L
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate() {
         super.onCreate()
 
@@ -52,9 +61,23 @@ class OverlayService : Service() {
         todoViewModel = TodoViewModel(this)
         initView()
 
+        handler = Handler(Looper.getMainLooper())
         val button = overlayView.findViewById<Button>(R.id.lock_button)
-        button.setOnClickListener {
-            handleLockState()
+
+        button.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    runnable = Runnable {
+                        Log.d(Constant.TAG, "Overlay onCreate: longClick checkedcheckedcheckedcheckedchecked")
+                        handleLockState()
+                    }
+                    handler?.postDelayed(runnable!!, holdTime)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    handler?.removeCallbacks(runnable!!)
+                }
+            }
+            true
         }
 
         windowManager.addView(overlayView, params)
