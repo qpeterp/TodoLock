@@ -64,7 +64,7 @@ class OverlayService : Service() {
         handler = Handler(Looper.getMainLooper())
         val button = overlayView.findViewById<Button>(R.id.lock_button)
 
-        button.setOnTouchListener { v, event ->
+        button.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     runnable = Runnable {
