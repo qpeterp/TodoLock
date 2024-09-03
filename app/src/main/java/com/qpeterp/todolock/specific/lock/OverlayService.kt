@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -13,7 +14,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qpeterp.todolock.R
@@ -35,7 +37,7 @@ class OverlayService : Service() {
 
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
-    private val holdTime = 5000L
+    private val holdTime = 10000L
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate() {
@@ -63,18 +65,30 @@ class OverlayService : Service() {
         initView()
 
         handler = Handler(Looper.getMainLooper())
-        val button = overlayView.findViewById<Button>(R.id.lock_button)
+        val button = overlayView.findViewById<ImageButton>(R.id.lock_button)
+        val progressbar = overlayView.findViewById<ProgressBar>(R.id.lock_progress)
+
+        val timer = object : CountDownTimer(holdTime, 100) {
+            override fun onTick(millisUntilFinished: Long) {
+                progressbar.progress = ((holdTime - millisUntilFinished) / holdTime.toFloat() * 100).toInt()
+            }
+            override fun onFinish() {
+                progressbar.progress = 100
+            }
+        }
 
         button.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    timer.start()
                     runnable = Runnable {
-                        Log.d(Constant.TAG, "Overlay onCreate: longClick checkedcheckedcheckedcheckedchecked")
                         handleLockState()
                     }
                     handler.postDelayed(runnable, holdTime)
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    progressbar.progress = 0
+                    timer.cancel()
                     handler.removeCallbacks(runnable)
                 }
             }
