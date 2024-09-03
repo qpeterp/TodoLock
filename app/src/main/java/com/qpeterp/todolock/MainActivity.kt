@@ -210,17 +210,17 @@ fun NavigationHost(navController: NavController) {
 }
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
-    object Lock : BottomNavItem(
+    data object Lock : BottomNavItem(
         "lockSetting",
         Icons.Outlined.Lock,
         "잠금"
     )
-    object Todo : BottomNavItem(
+    data object Todo : BottomNavItem(
         "todo",
         Icons.AutoMirrored.Outlined.List,
         "할일작성"
     )
-    object Setting : BottomNavItem(
+    data object Setting : BottomNavItem(
         "setting",
         Icons.Outlined.Settings,
         "설정"
