@@ -11,6 +11,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -196,7 +198,11 @@ private fun MyBottomNavigation(
 
 @Composable
 fun NavigationHost(navController: NavController) {
-    NavHost(navController as NavHostController, startDestination = BottomNavItem.Todo.route) {
+    NavHost(navController as NavHostController,
+        startDestination = BottomNavItem.Todo.route,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None }
+    ) {
         composable(BottomNavItem.Lock.route) { TypeScreen() }
         composable(BottomNavItem.Todo.route) { TodoScreen() }
         composable(BottomNavItem.Setting.route) { SettingScreen() }
