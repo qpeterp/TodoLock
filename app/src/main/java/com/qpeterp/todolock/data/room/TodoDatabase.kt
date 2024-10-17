@@ -6,16 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [TodoData::class], version = 1)
-abstract class TodoDatabase: RoomDatabase() {
+abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 
     companion object {
         private var instance: TodoDatabase? = null
 
         @Synchronized
-        fun getInstance(context: Context): TodoDatabase? {
+        fun getInstance(context: Context): TodoDatabase {
             if (instance == null) {
-                synchronized(TodoDatabase::class){
+                synchronized(TodoDatabase::class) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         TodoDatabase::class.java,
@@ -23,7 +23,7 @@ abstract class TodoDatabase: RoomDatabase() {
                     ).build()
                 }
             }
-            return instance
+            return instance!!
         }
     }
 }

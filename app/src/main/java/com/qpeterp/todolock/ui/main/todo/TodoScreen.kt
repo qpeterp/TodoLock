@@ -127,7 +127,7 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                 fontSize = 16.sp
             )
             IconButton(
-                onClick = {expanded = !expanded},
+                onClick = { expanded = !expanded },
             ) {
                 Icon(
                     imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
@@ -167,7 +167,7 @@ fun TodoList(todoList: List<TodoData>, viewModel: TodoViewModel) {
                 }
             }
         }
-        
+
         if (isUpdateClick.value) {
             UpdateTodoDialog(
                 todo = todoToUpdate,
@@ -283,7 +283,7 @@ fun UpdateTodoDialog(
     todo: TodoData,
     onClickCancel: () -> Unit,
     onClickUpdate: (text: String) -> Unit,
-    ) {
+) {
     var text by remember { mutableStateOf(todo.todo) }
 
     Dialog(
@@ -296,7 +296,7 @@ fun UpdateTodoDialog(
         Card(
             shape = RoundedCornerShape(20.dp),
             border = BorderStroke(2.dp, Colors.LightPrimaryColor),
-            colors =  CardDefaults.cardColors(
+            colors = CardDefaults.cardColors(
                 contentColor = Colors.Black,
                 containerColor = Colors.Black
             )
@@ -321,14 +321,18 @@ fun UpdateTodoDialog(
                     onValueChange = { newText ->
                         text = newText
                     },
-                    label = { Text(
-                        text = "할일 수정",
-                        color = Colors.LightPrimaryColor
-                    ) },
-                    placeholder = { Text(
-                        text = "할일을 입력해주세요.",
-                        color = Colors.GrayLight
-                    ) },
+                    label = {
+                        Text(
+                            text = "할일 수정",
+                            color = Colors.LightPrimaryColor
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            text = "할일을 입력해주세요.",
+                            color = Colors.GrayLight
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
@@ -351,7 +355,7 @@ fun UpdateTodoDialog(
                             backgroundColor = Colors.Black,
                         ),
                         border = BorderStroke(2.dp, Colors.LightPrimaryColor),
-                        onClick ={ onClickCancel() },
+                        onClick = { onClickCancel() },
                     ) {
                         Text(
                             text = "취소",
@@ -364,7 +368,7 @@ fun UpdateTodoDialog(
                             backgroundColor = Colors.LightPrimaryColor,
                             contentColor = Color.White
                         ),
-                        onClick ={ onClickUpdate(text) },
+                        onClick = { onClickUpdate(text) },
                     ) {
                         Text(
                             text = "수정",
@@ -407,14 +411,18 @@ fun CreateTodoDialog(viewModel: TodoViewModel) {
                     onValueChange = { newText ->
                         text = newText
                     },
-                    label = { Text(
-                        text = "할일",
-                        color = Colors.LightPrimaryColor
-                    ) },
-                    placeholder = { Text(
-                        text = "할일을 입력해주세요.",
-                        color = Colors.GrayLight
-                    ) },
+                    label = {
+                        Text(
+                            text = "할일",
+                            color = Colors.LightPrimaryColor
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            text = "할일을 입력해주세요.",
+                            color = Colors.GrayLight
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = Colors.White,  // 입력된 텍스트 색상
@@ -432,10 +440,10 @@ fun CreateTodoDialog(viewModel: TodoViewModel) {
                     ),
                     modifier = Modifier.align(Alignment.End),
                     onClick = {
-                    viewModel.addTodo(todo = text)
-                    text = ""
-                    coroutineScope.launch { sheetState.hide() }
-                }) {
+                        viewModel.addTodo(todo = text)
+                        text = ""
+                        coroutineScope.launch { sheetState.hide() }
+                    }) {
                     Text(
                         text = "추가",
                         color = Colors.White
@@ -459,10 +467,12 @@ fun CreateTodoButton(onClick: () -> Unit) {
         ExtendedFloatingActionButton(
             onClick = onClick,
             icon = { Icon(Icons.Outlined.Add, contentDescription = "할일 추가") },
-            text = { Text(
-                text = "할일 추가",
-                fontSize = 14.sp
-            )},
+            text = {
+                Text(
+                    text = "할일 추가",
+                    fontSize = 14.sp
+                )
+            },
             contentColor = Colors.White,
             containerColor = Colors.LightPrimaryColor,
             modifier = Modifier

@@ -20,7 +20,7 @@ class TodoViewModel(context: Context): ViewModel() {
 
     private val db = TodoDatabase.getInstance(context)
     val todoToUpdate = mutableStateOf(
-        TodoData(uuid = UUID.fromString("aa1a1aa1-a1aa-11aa-aa11-11aa11aa1111"), todo = "", isChecked = false)
+        TodoData(uuid = UUID.randomUUID(), todo = "ㅂㅏㅂ먹기", isChecked = false)
     )
 
     init {
@@ -29,14 +29,14 @@ class TodoViewModel(context: Context): ViewModel() {
 
     private fun loadTodos() {
         viewModelScope.launch(Dispatchers.IO) {
-            val todos = db?.todoDao()?.getAll() ?: emptyList()
+            val todos = db.todoDao().getAll()
             _todoList.value = todos
         }
     }
 
     fun addTodo(todo: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            db?.todoDao()?.insertTodo(TodoData(todo = todo, isChecked = false))
+            db.todoDao().insertTodo(TodoData(todo = todo, isChecked = false))
             loadTodos()
         }
     }
@@ -45,14 +45,14 @@ class TodoViewModel(context: Context): ViewModel() {
         if (type == UpdateType.CHECK) todo.isChecked = !todo.isChecked
 
         viewModelScope.launch(Dispatchers.IO) {
-            db?.todoDao()?.updateTodo(todo)
+            db.todoDao().updateTodo(todo)
             loadTodos()
         }
     }
 
     fun deleteTodo(todo: TodoData) {
         viewModelScope.launch(Dispatchers.IO) {
-            db?.todoDao()?.deleteTodo(todo)
+            db.todoDao().deleteTodo(todo)
             loadTodos()
         }
     }

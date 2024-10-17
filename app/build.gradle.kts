@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -70,7 +70,7 @@ dependencies {
     implementation(libs.androidx.compose.material)
     annotationProcessor(libs.androidx.room.compiler)
 
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
 
     // optional - RxJava2 support for Room
     implementation(libs.androidx.room.rxjava2)
@@ -86,7 +86,6 @@ dependencies {
 
 // optional - Paging 3 Integration
     implementation(libs.androidx.room.paging)
-
 
     // Jetpack Compose Integration
     implementation(libs.androidx.navigation.compose)
