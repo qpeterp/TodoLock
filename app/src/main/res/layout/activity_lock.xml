@@ -72,7 +72,7 @@
         android:id="@+id/unLockText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="비상해: 버튼을 10초간 눌러주세요."
+        android:text="비상해제: 버튼을 10초간 눌러주세요."
         android:textColor="@color/white"
         android:textSize="14sp"
         android:layout_marginBottom="56dp"
